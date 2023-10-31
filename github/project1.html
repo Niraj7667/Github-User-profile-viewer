@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GitHub User Profile Viewer</title>
+    <style>
+        *{
+            font-family: 'Menlo',sans-serif;
+        }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background:url(gitbg.jpg) no-repeat ;
+            background-size: cover;
+            margin: 0;
+            padding: 0;
+        }
+        #container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            
+        }
+        #profile {
+            border-radius: 10px;
+            color: #fff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            text-align: center;
+            width: auto;
+            position: absolute;
+            top: 45%;
+            border:2px solid #ccc ;
+            backdrop-filter: blur(20px);
+            height: auto;
+            transform: scale(0);
+            transition: transform .5s ease,height .2s ease;
+        }
+        #profile.active-popup{
+            transform: scale(1);
+        }
+        h1 {
+            color:  white;
+            position: fixed;
+            top: 8%;
+        }
+        #avatar {
+            max-width: 150px;
+            border-radius: 50%;
+            position: fixed;
+            background-color: #fff;
+            top: 28.5%;
+            left: 110%;
+            border: 3px solid #ccc;
+        }
+        #username {
+            font-weight: 900px;
+            color: black;
+        }
+        #bio {
+            margin-top: 10px;
+        }
+        #followers, #following, #publicRepos, #name, #location, #link {
+            margin-top: 10px;
+            font-weight: bold;
+        }
+        input {
+            padding: 10px;
+            width: 300px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+            position: fixed;
+            top: 25%;
+        }
+        .btn {
+            width:150px;
+            height: 50px;
+            margin-top: 10px;
+            padding: 10px 20px;
+            margin-bottom: 10px;
+            background:black;
+            color: #fff;
+            border: 2px solid rgb(255, 255, 255);
+            border-radius: 5px;
+            cursor: pointer;
+            transition:0.3s;
+            position: fixed;
+            top:23%;
+            left:62%
+            
+        }
+        #data{
+            position: relative;
+            top: 34%;
+            left: 1%;
+            
+        }
+        button:hover {
+            background-color: white;
+            color: black;
+            border: 2px solid black;
+        }
+        p{
+            width: 400px;
+            
+        }
+
+    </style>
+</head>
+<body>
+    <div id="container">
+        <h1><span class="auto-type"></span></h1>
+        <script src="https://unpkg.com/typed.js@2.0.16/dist/typed.umd.js"></script>
+        <script>
+          var typed =new Typed(".auto-type",{
+            strings: ["Github Profile Viewer","Find Your Profile Here!"],
+            typeSpeed:70,
+            backSpeed:70,
+            loop: true
+          })
+          </script>
+        <input type="text" id="usernameInput" placeholder="Enter GitHub Username">
+        <button onclick="fetchUserProfile()" class="btn">Get Profile</button>
+        
+        <div id="profile">
+            <img id="avatar" src="account.png" alt="User Avatar">
+            <div id="data">
+            <h2 id="username"></h2>
+            <p id="name"></p>
+            <p id="bio"></p>
+            <p id="followers"></p>
+            <p id="following"></p>
+            <p id="publicRepos"></p>
+            <p id="location"></p>
+            <div id="link"> <a href="link"></a></div>
+            
+        </div>
+    </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" ></script>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        async function fetchUserProfile() {
+            const username = document.getElementById("usernameInput").value;
+            const url = `https://api.github.com/users/${username}`;
+
+            try {
+                const response = await fetch(url);
+
+                if (response.status === 200) {
+                    const userData = await response.json();
+
+                    document.getElementById("avatar").src = userData.avatar_url;
+                    document.getElementById("username").textContent = userData.login;
+                    
+                    document.getElementById("name").textContent = `Name: ${userData.name}`;
+                    document.getElementById("bio").textContent = userData.bio || "No bio available";
+                    document.getElementById("followers").textContent = `Followers: ${userData.followers}`;
+                    document.getElementById("following").textContent = `Following: ${userData.following}`;
+                    document.getElementById("publicRepos").textContent = `Public Repositories: ${userData.public_repos}`;
+                    document.getElementById("location").textContent = `Location: ${userData.location}`;
+                    document.getElementById("link").textContent = `Profile Link: ${userData.html_url}`;
+
+                   
+                    
+                    document.getElementById("profile").style.display = "block";
+                } else {
+                    Swal.fire("User not found.");
+                    document.getElementById("profile").style.display = "none";
+                }
+            } catch (error) {
+                
+                console.error("Error:", error);
+            }
+            
+        }
+    </script>
+    <script>
+        const profile1=document.querySelector('#profile');
+        const Btnlogin=document.querySelector('.btn');
+        Btnlogin.addEventListener('click',()=>{
+            profile1.classList.add('active-popup');
+        });
+    </script>
+
+</body>
+</html>
